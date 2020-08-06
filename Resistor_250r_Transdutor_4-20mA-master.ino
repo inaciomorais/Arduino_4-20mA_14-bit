@@ -13,6 +13,8 @@ saída 0-20mA.
 
 Obs.: Montar o(s) resistor(es) o mais próximo possível da(s) entrada(s) analógica(s) do sistema microcontrolado.
 
+https://produto.mercadolivre.com.br/MLB-1620033927-1-un-resistor-filme-metalico-250ohms-01-400mw-_JM?quantity=1
+
 aimgxp
 
 */

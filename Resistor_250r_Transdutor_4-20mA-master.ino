@@ -13,7 +13,11 @@ saída 0-20mA.
 
 Obs.: Montar o(s) resistor(es) o mais próximo possível da(s) entrada(s) analógica(s) do sistema microcontrolado.
 
+Resistor 250 0.1% Filme metálico 400mW:
+
 https://produto.mercadolivre.com.br/MLB-1620033927-1-un-resistor-filme-metalico-250ohms-01-400mw-_JM?quantity=1
+
+Ou entre em contato whatsapp 35 991619878 para compra direta com desconto e frete econômico carta registrada.
 
 aimgxp
 

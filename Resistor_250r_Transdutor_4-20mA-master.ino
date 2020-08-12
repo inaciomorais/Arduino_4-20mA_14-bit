@@ -19,7 +19,7 @@ https://produto.mercadolivre.com.br/MLB-1620033927-1-un-resistor-filme-metalico-
 
 Ou entre em contato whatsapp 35 991619878 para compra direta com desconto e frete econômico carta registrada.
 
-aimgxp
+Inácio Morais - aimgxp - anderson.morais@protonmail.com
 
 */
 

@@ -123,8 +123,9 @@ void loop()
 
   delay(250);  /* Delay de 250 ms (para tempo de aquisição apresentado no manual do transdutor como '< 250 ms'). Atenção: 
                 * Verifique o tempo de aquisição do transdutor aplicado. Aqui ainda deverá ser incluído (somado ao tempo de 
-                * aquisição do transdutor) pequeno delay referente à comutação dos relés que acionam o circuito de interesse 
-                * conectado ao transdutor, se aplicável (ver tempo de comutação na datasheet do relé e/ou contator aplicado).
+                * aquisição do transdutor) pequeno delay referente ao inhush de cargas indutivas e à comutação dos relés que
+                * acionam o circuito de interesse conectado ao transdutor, se aplicável (ver tempo de comutação na datasheet
+                * do relé e/ou contator aplicado).
                 */
                
   Vatual = Tens(VIn);

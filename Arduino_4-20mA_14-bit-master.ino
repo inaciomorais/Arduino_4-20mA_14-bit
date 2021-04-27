@@ -19,136 +19,74 @@ A. Inácio Morais - anderson.morais@protonmail.com - (35) 99161-9878 - 04/2021
 
 */
 
-float ICal=1.000, VCal=1.000; /* Valores multiplicadores para calibração de leituras via firmware. Trabalhar dentro do range
-                               * 0,700-1,300 (valores acima ou abaixo desse range indicam transdutor ou aferidor/padrão de 
-                               * calibração muito descalibrado). Podem ser implementadas rotinas para calibração posterior in 
-                               * loco com edição, salvamento e recuperação de valores em EEPROM. Obs.: Deve-se controlar os 
-                               * momentos de leitura e escrita em EEPROM evitando-se ao máximo a possibilidade de desligamento 
-                               * do sistema durante o acesso à mesma, pois o completo desligamento do sistema durante 
-                               * processos de leitura ou escrita da EEPROM podem ocasionar total perda ou corrompimento dos 
-                               * dados salvos. A criação de menus de calibração, leitura e escrita em EEPROM não são objeto 
-                               * deste Sketch. Calibrações devem ser feitas com padrões calibrados (no exemplo, para 
-                               * calibração de leituras de tensão e corrente altenada, o correto é a utilização de multímetro 
-                               * True-RMS calibrado).
-                               */
-float Iatual, Vatual;
-const byte CorrIn=A0, VIn=A1;
+const byte iw00=A0;
 
 void setup()				
 {
-  pinMode(CorrIn, INPUT);
-  pinMode(VIn, INPUT);
-
+  pinMode(iw00, INPUT);
+  
   Serial.begin(9600);  //  Inicia comunicação serial com 9600 bauds. Sketch exemplo apresenta comunicação ente Arduino e PC (Monitor Serial).
 }
 
-float Tens(byte pin) { // Função para Leitura de Tensão
-  int adc0;
-  float V_inst, Vact, V_sumf;
-  unsigned long V_sum = 0;
-  unsigned int i = 0;
-  unsigned int samps = 200;   /* Variável que guarda a quantidade de amostras realizadas (amostragem). Oversampling para 
-                               * melhora de precisão de ADCs 10 bits pela aplicação de preceitos estatísticos. Valores 
-                               * maiores de amostragem garantem uma maior precisão, porém aumentam o tempo de processamento e 
-                               * possibilidade de overflows.
-                               */
-  
-  adc0 = analogRead(pin);
+float analog_14bit(byte pin) {  // Função para leituras em Entradas Analógicas (Oversampling e Decimation)
+  int _adc;
+  unsigned long _soma = 0;
+  float _result;
+        
+  _adc = analogRead(pin);
   delay(25);
-  adc0 = analogRead(pin);     /* Leituras descartadas para eliminar valores parasitas (Ver datasheet ATmega e Arduino 
-                               * Reference). "The ATmega datasheet [...] cautions against switching analog pins in close 
-                               * temporal proximity to making A/D readings (analogRead) on other analog pins. This can cause 
-                               * electrical noise and introduce jitter in the analog system." [Arduino Reference]
-                               */
+  _adc = analogRead(pin);  /* Leituras descartadas para eliminar valores parasitas (Ver datasheet ATmega e Arduino 
+                            * Reference). "The ATmega datasheet [...] cautions against switching analog pins in close 
+                            * temporal proximity to making A/D readings (analogRead) on other analog pins. This can cause 
+                            * electrical noise and introduce jitter in the analog system." [Arduino Reference]
+                            */
 
-  for(i=0;i<samps;i++) {
-    V_sum += analogRead(pin);
-  }
+  for(unsigned int i=0;i<256;i++) _soma += analogRead(pin);  //Oversampling
     
-  V_sumf = ((float)V_sum / (float)samps);
+  _result = ((float)_soma / 16.0);  // Decimation
   
-  V_inst = (((V_sumf*500.0)-102300.0)/818.4); // 20--4 1023--X | X=204.6 | 1023--var--204.6 500--X--0 | X/500=(var-204.6)/(1023-204.6) | X=((500*var)-(500*204.6))/818.4
-                                              // Escalonamento acima referente a sistema microcontrolado com ADC 10 bits máx. 5Vcc e Transdutor 4-20mA 0-500Vca eficaz (RMS)
-  Vact = V_inst * VCal;
-  
-  return Vact;
+  return _result;
 }
 
-float Corr(byte pin) { // Função para Leitura de Corrente
-  int adc0;
-  float I_inst, Iact, I_sumf;
-  unsigned int I_sum = 0, i = 0;
-  unsigned int samps = 64;  /* Variável que guarda a quantidade de amostras realizadas (amostragem). Oversampling para 
-                             * melhora de precisão de ADCs 10 bits pela aplicação de preceitos estatísticos. Valores maiores 
-                             * de amostragem garantem uma maior precisão, porém aumentam o tempo de processamento e 
-                             * possibilidade de overflows.
-                             */
-     
-  adc0 = analogRead(pin);
-  delay(25);
-  adc0 = analogRead(pin);    /* Leituras descartadas para eliminar valores parasitas (Ver datasheet ATmega e Arduino 
-                              * Reference). "The ATmega datasheet [...] cautions against switching analog pins in close 
-                              * temporal proximity to making A/D readings (analogRead) on other analog pins. This can cause 
-                              * electrical noise and introduce jitter in the analog system." [Arduino Reference]
-                              */
+void loop() {
+  float _cal=1.000;  /* Valor multiplicador para calibração de leituras via firmware. Trabalhar dentro do range
+                      * 0,800-1,200 (valores acima ou abaixo desse range indicam transdutor ou aferidor/padrão de 
+                      * calibração muito descalibrado). Podem ser implementadas rotinas para calibração posterior in 
+                      * loco com edição, salvamento e recuperação de valores em EEPROM. A criação de menus/rotinas 
+                      * de calibração, leitura e escrita em EEPROM não são objeto deste Sketch. Calibrações devem 
+                      * ser feitas com padrões calibrados.
+                      */
+  float _leitura;
 
-  for(i=0;i<samps;i++) {
-    I_sum += analogRead(pin);
-  }
-    
-  I_sumf = ((float)I_sum / (float)samps);
-  
-  I_inst = (((I_sumf*5.0)-1023.0)/818.4);   // 20--4 1023--X | X=204.6 | 1023--var--204.6 5--X--0 | X/5=(var-204.6)/(1023-204.6) | X=((5*var)-(5*204.6))/818.4
-                                            // Escalonamento acima referente a sistema microcontrolado com ADC 10 bits máx. 5Vcc e Transdutor 4-20mA 0-5Aca eficaz (RMS)
-  Iact = I_inst * ICal;
-  if (Iact < 0.00) Iact = 0.00;
-  
-  return Iact;
-}
-
-void loop()
-{
-    
-  /* Aqui poderiam ser inseridos comandos para acionamento dos circuitos conectados ao transdutor (acionamento com relés, 
-   * por exemplo), não esquecendo das devidas configurações de pinos em 'void setup(){}'.
-   */
-    
-  /* Após acionamento dos circuitos conectados nas entradas de leitura do transdutor (cargas de interesse), aplicar o delay 
-   * referente ao tempo de aquisição estabelecido no manual do transdutor. Exemplo:
-   */
-
-  delay(250);  /* Delay de 250 ms (para tempo de aquisição apresentado no manual do transdutor como '< 250 ms'). Atenção: 
-                * Verifique o tempo de aquisição do transdutor aplicado. Aqui ainda deverá ser incluído (somado ao tempo de 
-                * aquisição do transdutor) pequeno delay referente ao inhush de cargas indutivas e à comutação dos relés que
-                * acionam o circuito de interesse conectado ao transdutor, se aplicável (ver tempo de comutação na datasheet
-                * do relé e/ou contator aplicado).
+  delay(250);  /* Principalmente para amostragens que não podem ocorrer indefinidamente (dependentes primeiramente da 
+                * comutação de circuitos específicos e com posterior alimentação dos terminais de leitura do transdutor), 
+                * aplica-se um delay referente ao tempo de aquisição estabelecido no manual do transdutor e ao tempo de 
+                * comutação dos relés/contatores envolvidos. Ex.: Delay de 250 ms para tempo de aquisição apresentado 
+                * no manual do transdutor como '< 200 ms' e pequeno delay considerando os tempos de comutação. Atenção: 
+                * Sempre verifique o tempo de aquisição do transdutor aplicado.
                 */
-               
-  Vatual = Tens(VIn);
-  Iatual = Corr(CorrIn);                            
- 
-  Serial.print(Vatual, 2);  /* Envia o valor de Vatual através da porta serial com duas casas decimais. Para abrir o 
-                             * Monitor Serial, clique em 'Serial Monitor' no menu 'Tools' da IDE Arduino ou pressione as 
-                             * teclas Ctrl+Shift+M com a IDE Arduino aberta.
-                             */				
-  Serial.println(" Vca");
-  
-  Serial.print(Iatual, 3);  //  Envia o valor de Iatual através da porta serial com três casas decimais.
-  Serial.println(" Aca");     
-  
-  delay(500); /* Inclui delay limitando quantidade de dados enviados através da porta serial. Delay de 500 ms. Esse
-               * delay não é necessário em uma aplicação real, onde a leitura do valor enviado pelo transdutor ocorre em 
-               * momentos específicos (aqui a leitura ocorre de forma cíclica para demonstração com auxílio do 
-               * Monitor Serial).
-               */ 
-               
-              /* Poderiam ser inseridos aqui comandos para desacionamento dos circuitos conectados às entradas de leitura 
-               * do transdutor e demais processamentos. Lembrando ainda que o desacionamento de cargas pode gerar ruídos que 
-               * interferem no correto funcionamento do sistema microcontrolado e principalmente em processos de comunicação 
-               * associados. Assim, aplicar relés (Módulos de Relés ou Relés Modulares de Interface) com optoisolamento e/ou 
-               * supressores de ruído/surtos. Recomenda-se fortemente (semprre) a aplicação de supressores de ruído em 
-               * contatores ou minicontatores. Também avaliar aplicação de um delay após desacionamento de cargas indutivas 
-               * consideráveis ou (mini)contatores para garantir que o ruído gerado não interfira em processos críticos como 
-               * comunicação com Display LCD.
-               */
+
+  _leitura = analog_14bit(iw00);
+
+  // Máx. valor inteiro representado por 14 bits = 16383
+  // NORMALIZAÇÃO (Considerando entrada 4-20mA):
+  //                    20mA -- 16383 | 4mA -- x
+  //                    x = 3276,6
+
+  // ESCALONAMENTO (Considerando unidade/variável de processo como Porcentagem):
+  //                    (_leitura - 3276,6) / (16383 - 3276,6) = (y - 0%) / (100% - 0%)
+  //                    (_leitura - 3276,6) / 13106,4 = y / 100
+  //                    y = ((_leitura - 3276,6) / 13106,4) * 100
+
+  // É possível realizar multiplas chamadas da função 'analog_14bit' após o tempo de aquisição/comutação, salvando os
+  // retornos em diferentes variáveis e efetuando média das leituras obtidas para obter-se uma menor variação. Mas, o   
+  // aumento na precisão também significa um aumento nos tempos de processamento envolvidos.
+
+  _leitura = (((_leitura - 3276.6) / 13106.4) * 100.0) * _cal;
+            
+  Serial.print(_leitura, 2);  /* Envia o valor de _leitura através da porta serial com duas casas decimais. Para abrir o 
+                               * Monitor Serial, clique em 'Monitor serial' no menu 'Ferramentas' da IDE Arduino ou pressione as 
+                               * teclas Ctrl+Shift+M com a IDE Arduino aberta. Usar módulo FTDI232.
+                               */        
+  Serial.println(" %");  
 }

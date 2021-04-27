@@ -86,7 +86,7 @@ void loop() {
             
   Serial.print(_leitura, 2);  /* Envia o valor de _leitura através da porta serial com duas casas decimais. Para abrir o 
                                * Monitor Serial, clique em 'Monitor serial' no menu 'Ferramentas' da IDE Arduino ou pressione as 
-                               * teclas Ctrl+Shift+M com a IDE Arduino aberta. Usar módulo FTDI232.
+                               * teclas Ctrl+Shift+M com a IDE Arduino aberta.
                                */        
   Serial.println(" %");  
 }

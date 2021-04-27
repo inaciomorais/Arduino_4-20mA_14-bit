@@ -1,8 +1,8 @@
 # Arduino_4-20mA_14-bit
-Interfaceamento de Transdutor 0(4)-20mA com Resistor 250r e Arduino aplicando técnica de Oversampling e Decimation (14-bit)
+Interfaceamento de Transdutor 4-20mA com Resistor 250r e Arduino aplicando técnica de Oversampling e Decimation (14-bit)
 
 
-Exemplo de aplicação de Resistor 250r 0.1% em saída de Transdutor 4-20mA (conversão de range para nível de tensão contínua 0(1)-5Vcc apropriado às entradas analógicas do Arduino ou outro sistema microcontrolado). 
+Exemplo de aplicação de Resistor 250r 0.1% em saída de Transdutor 4-20mA (conversão de range para nível de tensão contínua 1-5Vcc apropriado às entradas analógicas do Arduino ou outro sistema microcontrolado). 
 
 Realiza leitura analógica 4-20mA e envia valor pela porta serial.
 

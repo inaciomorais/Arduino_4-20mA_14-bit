@@ -7,7 +7,7 @@ Interfaceamento de Transdutor 4-20mA com Resistor 250r e Arduino aplicando técn
 Exemplo de aplicação de Resistor 250r 0.1% em saída de Transdutor 4-20mA (conversão de range para nível de tensão contínua
 1-5Vcc apropriado às entradas analógicas do Arduino ou outro sistema microcontrolado). 
 
-Realiza leitura analógica 4-20mA e envia valor pela porta serial.
+Realiza leitura analógica (4-20mA) e envia valor (em porcentagem) para Display LCD 16x2 I2C.
 
 Obs.: Montar o(s) resistor(es) o mais próximo possível da(s) entrada(s) analógica(s) do sistema microcontrolado.
 
@@ -15,9 +15,14 @@ Resistor 250 0.1% Filme metálico 400mW:
 
 https://produto.mercadolivre.com.br/MLB-1620033927-1-un-resistor-filme-metalico-250ohms-01-400mw-_JM?quantity=1
 
-A. Inácio Morais - anderson.morais@protonmail.com - (35) 99161-9878 - 04/2021
+A. Inácio Morais - anderson.morais@protonmail.com - (35) 99161-9878 - 2022
 
 */
+
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7,3, POSITIVE);
 
 const byte iw00=A0;
 
@@ -25,7 +30,8 @@ void setup()
 {
   pinMode(iw00, INPUT);
   
-  Serial.begin(9600);  //  Inicia comunicação serial com 9600 bauds. Sketch exemplo apresenta comunicação ente Arduino e PC (Monitor Serial).
+  Wire.begin();
+  lcd.begin(16,2);
 }
 
 float analog_14bit(byte pin) {  // Função para leituras em Entradas Analógicas (Oversampling e Decimation)
@@ -91,9 +97,10 @@ void loop() {
 
   _leitura = (((_leitura - 3276.6) / 13106.4) * 100.0) * _cal;
             
-  Serial.print(_leitura, 2);  /* Envia o valor de _leitura através da porta serial com duas casas decimais. Para abrir o 
-                               * Monitor Serial, clique em 'Monitor serial' no menu 'Ferramentas' da IDE Arduino ou pressione as 
-                               * teclas Ctrl+Shift+M com a IDE Arduino aberta.
-                               */        
-  Serial.println(" %");  
+  lcd.setCursor(0,0);
+  lcd.print("     ");
+  lcd.print(_leitura, 2);
+  lcd.print("%      ");
+  lcd.setCursor(0,1);
+  lcd.print("                ");
 }

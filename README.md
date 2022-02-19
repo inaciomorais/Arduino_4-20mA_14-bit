@@ -4,7 +4,7 @@ Interfaceamento de Transdutor 4-20mA com Resistor 250r e Arduino aplicando técn
 
 Exemplo de aplicação de Resistor 250r 0.1% em saída de Transdutor 4-20mA (conversão de range para nível de tensão contínua 1-5Vcc apropriado às entradas analógicas do Arduino ou outro sistema microcontrolado). 
 
-Realiza leitura analógica 4-20mA e envia valor pela porta serial.
+Realiza leitura analógica (4-20mA) e envia valor (em porcentagem) para Display LCD 16x2 I2C.
 
 Resistor 250 0.1% Filme metálico 400mW:
 

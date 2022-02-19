@@ -17,6 +17,8 @@ https://produto.mercadolivre.com.br/MLB-1620033927-1-un-resistor-filme-metalico-
 
 A. Inácio Morais - anderson.morais@protonmail.com - (35) 99161-9878 - 2022
 
+Se ajudou, você pode dar uma fortalecida pelo PIX 061.558.606-61 (CPF)! Obrigado.
+
 */
 
 #include <Wire.h>

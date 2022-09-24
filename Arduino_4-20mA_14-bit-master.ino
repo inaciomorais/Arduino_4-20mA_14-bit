@@ -89,9 +89,9 @@ void loop() {
   //                    x = 3276,6
 
   // ESCALONAMENTO (Considerando unidade/variável de processo como Porcentagem):
-  //                    (_leitura - 3276,6) / (16383 - 3276,6) = (y - 0%) / (100% - 0%)
+  //                    (_leitura - 3276,6) / (16383 - 3276,6) = (y[%] - 0[%]) / (100[%] - 0[%])
   //                    (_leitura - 3276,6) / 13106,4 = y / 100
-  //                    y = ((_leitura - 3276,6) / 13106,4) * 100
+  //                    y = ((_leitura - 3276,6) / 13106,4) * 100 [%]
 
   // É possível realizar multiplas chamadas da função 'analog_14bit' após o tempo de aquisição/comutação, salvando os
   // retornos em diferentes variáveis e efetuando média das leituras obtidas para obter-se uma menor variação. Mas, o   

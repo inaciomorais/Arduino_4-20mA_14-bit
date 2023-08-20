@@ -9,6 +9,8 @@ Exemplo de aplicação de Resistor 250r 0.1% em saída de Transdutor 4-20mA (con
 
 Realiza leitura analógica (4-20mA) e envia valor (em porcentagem) para Display LCD 16x2 I2C.
 
+Biblioteca LiquidCrystal_I2C by Frank de Brabander (baixada diretamente na IDE Arduino) 
+
 Obs.: Montar o(s) resistor(es) o mais próximo possível da(s) entrada(s) analógica(s) do sistema microcontrolado.
 
 Resistor 250 0.1% Filme metálico 400mW:
@@ -19,19 +21,16 @@ A. Inácio Morais - anderson.morais@protonmail.com - (35) 99161-9878 - 2022
 
 */
 
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
+#include <LiquidCrystal_I2C.h> 
 
-LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7,3, POSITIVE);
-
-const byte iw00=A0;
+LiquidCrystal_I2C lcd(0x27,16,2);
 
 void setup()				
 {
-  pinMode(iw00, INPUT);
+  pinMode(A0, INPUT);
   
-  Wire.begin();
-  lcd.begin(16,2);
+  lcd.init();
+  lcd.backlight();
 }
 
 float analog_14bit(byte pin) {  // Função para leituras em Entradas Analógicas (Oversampling e Decimation)
@@ -86,7 +85,7 @@ void loop() {
                 * Sempre verifique o tempo de aquisição do transdutor aplicado.
                 */
 
-  _leitura = analog_14bit(iw00);
+  _leitura = analog_14bit(A0);
 
   // Máx. valor inteiro representado por 14 bits = 16383
   // NORMALIZAÇÃO (Considerando entrada 4-20mA):

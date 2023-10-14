@@ -6,6 +6,8 @@ Exemplo de aplicação de Resistor 250r 0.1% em saída de Transdutor 4-20mA (con
 
 Realiza leitura analógica (4-20mA) e envia valor (em porcentagem) para Display LCD 16x2 I2C.
 
+Apenas um resistor entre a Entrada Analógica do Arduino e o GND.
+
 Resistor 250 0.1% Filme metálico 400mW:
 
 https://produto.mercadolivre.com.br/MLB-1620033927-1-un-resistor-filme-metalico-250ohms-01-400mw-_JM
